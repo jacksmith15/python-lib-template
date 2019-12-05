@@ -15,7 +15,9 @@ header() {
     local width
     header="$1"
     color="$2"
+    {% raw %}
     len="${#header}"
+    {% endraw %}
     width="$(tput cols)"
     let block="($width-$len - 4)/2"
     echo -e "$color"
