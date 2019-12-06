@@ -23,10 +23,14 @@ with open(REQUIREMENTS_FILE_PATH, "r") as f:
         if not line.startswith("#") and not line.startswith("--")
     ]
 
+with open("README.md", "r") as readme_file:
+    LONG_DESCRIPTION = readme_file.read()
+
 setup(
     name="{{ cookiecutter.project_slug }}",
     version={{ cookiecutter.package_name }}.__version__,
     description="{{ cookiecutter.description }}",
+    long_description=LONG_DESCRIPTION,
     author="{{ cookiecutter.copyright_name }}",
     classifiers=[
         "Development Status :: 3 - Alpha",
