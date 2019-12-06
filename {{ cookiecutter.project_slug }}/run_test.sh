@@ -94,13 +94,13 @@ clean() {
     rm -rf .mypy_cache || true
     rm -r build || true
     rm -r dist || true
-    rm -r "$(echo -- *.egg-info)" || true
+    rm -r "$(echo *.egg-info)" || true
 }
 
 lint() {
     header "Linting" "$blue"
-    PYLINT_CMD="pylint --output-format=colorized" 
-    $PYLINT_CMD --rcfile {{ cookiecutter.package_name }}/.pylintrc {{ cookiecutter.package_name }} || EXIT_CODE=1 
+    PYLINT_CMD="pylint --output-format=colorized"
+    $PYLINT_CMD --rcfile {{ cookiecutter.package_name }}/.pylintrc {{ cookiecutter.package_name }} || EXIT_CODE=1
     $PYLINT_CMD --rcfile tests/.pylintrc tests || EXIT_CODE=1
 }
 
