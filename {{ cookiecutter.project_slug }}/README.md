@@ -18,7 +18,8 @@ Package requirements may be installed via `pip install -r requirements.txt`. Use
 # Development
 1. Clone the repository: `git clone git@github.com:{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}.git && cd {{ cookiecutter.project_slug }}`
 2. Install the requirements: `pip install -r requirements.txt -r requirements-test.txt`
-3. Run the tests: `bash run_test.sh -c -a`
+3. Run `pre-commit` install
+4. Run the tests: `bash run_test.sh -c -a`
 
 This project uses the following QA tools:
 - [PyTest](https://docs.pytest.org/en/latest/) - for running unit tests.
