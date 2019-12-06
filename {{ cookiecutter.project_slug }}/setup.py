@@ -27,7 +27,7 @@ setup(
     name="{{ cookiecutter.project_slug }}",
     version={{ cookiecutter.package_name }}.__version__,
     description="{{ cookiecutter.description }}",
-    author={{ cookiecutter.copyright_name }},
+    author="{{ cookiecutter.copyright_name }}",
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Developers",
