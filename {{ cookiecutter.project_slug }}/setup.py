@@ -31,6 +31,7 @@ setup(
     version={{ cookiecutter.package_name }}.__version__,
     description="{{ cookiecutter.description }}",
     long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
     url="https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}",
     author="{{ cookiecutter.copyright_name }}",
     classifiers=[

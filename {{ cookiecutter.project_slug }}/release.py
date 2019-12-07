@@ -247,6 +247,12 @@ Proceed?
 """
     )
 
+def github_release_body(current_version: Version, next_version: Version):
+    return f"""
+[Release Notes](https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}/blob/{next_version}/CHANGELOG.md)
+[Changes](http://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}/compare/{current_version}..{next_version})
+"""
+
 
 def main():
     header("Starting release")
@@ -266,6 +272,10 @@ def main():
         sys.exit(1)
     header("Committing and tagging")
     tag_release(next_version)
+    print(
+        "Github 'release' body:"
+        f"{github_release_body(current_version, next_version)}"
+    )
 
 
 if __name__ == "__main__":
