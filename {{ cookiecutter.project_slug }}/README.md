@@ -23,7 +23,7 @@ Package requirements may be installed via `pip install -r requirements.txt`. Use
 
 This project uses the following QA tools:
 - [PyTest](https://docs.pytest.org/en/latest/) - for running unit tests.
-- [PyLint](https://www.pylint.org/) - for enforcing code style.
+- [PyFlakes](https://github.com/PyCQA/pyflakes) - for enforcing code style.
 - [MyPy](http://mypy-lang.org/) - for static type checking.
 - [Travis CI](https://travis-ci.org/) - for continuous integration.
 - [Black](https://black.readthedocs.io/en/stable/) - for uniform code formatting.

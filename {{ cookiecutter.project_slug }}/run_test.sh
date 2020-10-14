@@ -99,9 +99,8 @@ clean() {
 
 lint() {
     header "Linting" "$blue"
-    PYLINT_CMD="pylint --output-format=colorized"
-    $PYLINT_CMD --rcfile {{ cookiecutter.package_name }}/.pylintrc {{ cookiecutter.package_name }} || EXIT_CODE=1
-    $PYLINT_CMD --rcfile tests/.pylintrc tests || EXIT_CODE=1
+    pyflakes {{ cookiecutter.package_name }}
+    pyflakes tests
 }
 
 typecheck() {

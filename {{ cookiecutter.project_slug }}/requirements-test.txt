@@ -1,8 +1,7 @@
-pylint==2.4.4
-astroid==2.3.3
-mypy==0.730
+pyflakes
+mypy
 coverage
-pytest==4.6.6
+pytest
 pytest-cov
 ipdb
 pre-commit
