@@ -20,7 +20,7 @@ pyflakes = "^2.3.1"
 invoke = "^1.5.0"
 termcolor = "^1.1.0"
 pytest-cov = "^2.11.1"
-changelog = "^0.1.0"
+changelog-cmd = "^0.1.0"
 
 [tool.isort]
 # Setting compatible with black. See https://black.readthedocs.io/en/stable/compatible_configs.html
