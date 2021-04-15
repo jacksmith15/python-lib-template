@@ -10,8 +10,9 @@ def print_header(text: str, level: int = 1, icon: str = ""):
 
     padding_character = _HEADER_LEVEL_CHARACTERS[level]
     padding_length = max(shutil.get_terminal_size((80, 20)).columns - (len(icon) * 2), 0)
-
+    {%- raw %}
     padding = f"\n{{:{padding_character}^{padding_length}}}\n"
+    {%- endraw %}
     if level == 1:
         text = text.upper()
     print(padding.format(f"{icon}{text}{icon}"))
