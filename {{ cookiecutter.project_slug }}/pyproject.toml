@@ -1,6 +1,39 @@
+[tool.poetry]
+name = "{{ cookiecutter.project_slug }}"
+version = "0.1.0"
+description = ""
+authors = ["{{ cookiecutter.copyright_name }}"]
+packages = [
+    {include = "{{ cookiecutter.package_name }}"},
+]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.3"
+toml = "^0.10"
+ipdb = "^0.13.7"
+ipython = "^7.22.0"
+mypy = "^0.812"
+pyflakes = "^2.3.1"
+invoke = "^1.5.0"
+termcolor = "^1.1.0"
+pytest-cov = "^2.11.1"
+changelog = "^0.1.0"
+
+[tool.isort]
+# Setting compatible with black. See https://black.readthedocs.io/en/stable/compatible_configs.html
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+line_length = 120
+
 [tool.black]
-line-length = 80
-include = '\.py$'
+line-length = 120
+target-version = ['py38']
 exclude = '''
 /(
     \.eggs
@@ -8,11 +41,14 @@ exclude = '''
   | \.hg
   | \.mypy_cache
   | \.tox
-  | \.venv*
+  | \.venv
   | _build
   | buck-out
   | build
   | dist
-  | \.venv.*
 )/
 '''
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

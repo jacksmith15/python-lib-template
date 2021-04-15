@@ -16,10 +16,10 @@ Types of changes are:
 ### Added
 * Project started :)
 
-## [0.0.0]
-Nothing here.
-
 [Unreleased]: https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}/compare/initial..HEAD
 
 [Keep a Changelog]: http://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: http://semver.org/spec/v2.0.0.html
+
+[_release_link_format]: https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}/compare/{previous_tag}..{tag}
+[_breaking_change_token]: BREAKING

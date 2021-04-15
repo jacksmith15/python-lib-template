@@ -1,9 +1,0 @@
-pyflakes
-mypy
-coverage
-pytest
-pytest-cov
-ipdb
-pre-commit
-safety
-black
