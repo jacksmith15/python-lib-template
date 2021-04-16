@@ -1,8 +1,9 @@
 {
-    "project_slug": "json-ref-dict",
-    "project_name": "JSONSchema Ref Dict",
-    "package_name": "json_ref_dict",
+    "project_slug": "test",
+    "project_name": "test",
+    "package_name": "test",
     "github_user": "jacksmith15",
     "copyright_name": "Jack Smith",
-    "description": "Python dict-like object which abstracts resolution of JSONSchema references"
+    "description": "Testing the template.",
+    "package_type": "docker"
 }

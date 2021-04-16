@@ -18,11 +18,19 @@ RELEASE_BRANCH = "main"
 PACKAGE_FILE = str(Path(package.__file__).relative_to(Path(".").absolute()))
 
 
+{% if cookiecutter.package_type == "library" -%}
 @task(pre=[verify])
 def build(ctx):
     """Build wheel and sdist."""
     print_header("Building package")
     ctx.run("poetry build")
+{%- elif cookiecutter.package_type == "docker" -%}
+@task()
+def build(ctx):
+    """Build docker image."""
+    print_header("Building image")
+    ctx.run(f"docker build . --tag {{ cookiecutter.project_slug }}:{package.__version__}")
+{%- endif %}
 
 
 @task()
@@ -56,11 +64,16 @@ def release(ctx, dry_run=False):
     if not dry_run:
         tag_release(ctx, release_tag)
 
+    {% if cookiecutter.package_type == "library" -%}
     print_header("Publishing to PyPi", level=2)
     if not dry_run:
         ctx.run("poetry publish")
     else:
         ctx.run("poetry publish --dry-run")
+    {%- elif cookiecutter.package_type == "docker" -%}
+    print_header("Publishing image", level=2)
+    print("No image publishing set-up")
+    {%- endif %}
     return
 
 
