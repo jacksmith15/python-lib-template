@@ -6,6 +6,9 @@ authors = ["{{ cookiecutter.copyright_name }}"]
 packages = [
     {include = "{{ cookiecutter.package_name }}"},
 ]
+homepage = "https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}"
+repository = "https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}"
+readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
