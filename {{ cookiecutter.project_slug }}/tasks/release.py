@@ -15,7 +15,7 @@ from tasks.verify import verify
 
 RELEASE_BRANCH = "main"
 
-PACKAGE_FILE = str(Path(package.__file__).relative_to(Path(".").absolute()))
+PACKAGE_FILE = str(Path(package.__file__).relative_to(Path(__file__).parent.parent.absolute()))
 
 
 {% if cookiecutter.package_type == "library" -%}
@@ -112,7 +112,7 @@ def update_release_tags() -> str:
     update_file(
         "pyproject.toml",
         lambda content: re.sub(
-            r'version *= *".*"',
+            r'^version *= *".*"',
             f'version = "{release_tag}"',
             content,
         ),
