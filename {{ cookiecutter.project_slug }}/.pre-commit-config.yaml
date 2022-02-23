@@ -1,13 +1,13 @@
 # See https://pre-commit.com/ for usage and config
 default_language_version:
-  python: python3.9
+  python: python{{ cookiecutter.python_version }}
 repos:
 - repo: https://github.com/ambv/black
-  rev: 20.8b1
+  rev: 22.1.10
   hooks:
   - id: black
 - repo: https://github.com/pycqa/isort
-  rev: 5.8.0
+  rev: 5.10.1
   hooks:
   - id: isort
     name: isort

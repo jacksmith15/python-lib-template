@@ -15,7 +15,7 @@ git clone https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.proj
 Install dependencies:
 
 ```shell
-pyenv shell 3.9.4  # Or other 3.9.x
+pyenv shell {{ cookiecutter.python_version }}.x
 pre-commit install  # Configure commit hooks
 poetry install  # Install Python dependencies
 ```
