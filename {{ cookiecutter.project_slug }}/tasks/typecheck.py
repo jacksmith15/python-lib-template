@@ -11,4 +11,4 @@ def typecheck(ctx):
     """
     print_header("RUNNING TYPE CHECKER")
 
-    ctx.run(f"mypy {package.__name__} tasks tests", pty=True)
+    ctx.run(f"mypy {package.__name__} tasks tests")

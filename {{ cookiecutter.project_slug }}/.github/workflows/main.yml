@@ -1,32 +1,54 @@
-
 name: tests
-
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
-  workflow_dispatch:
-
+  workflow_dispatch: null
 jobs:
   test:
+    name: test
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '{{ cookiecutter.python_version }}'
           architecture: 'x64'
-
       - name: Install poetry
         run: |
-          pip install -U pip
-          pip install poetry
-
+          pip install --upgrade pip
+          pip install poetry==1.6.1
       - name: Install dependencies
         run: poetry install
-
       - name: Run tests
         run: poetry run inv verify
+  deploy:
+    name: deploy
+    {% raw -%}
+    if: ${{ github.event_name == 'push' && github.event.ref == 'refs/heads/main' }}
+    {%- endraw %}
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    env:
+      {% raw -%}
+      POETRY_PYPI_TOKEN_PYPI: ${{ secrets.PYPI_TOKEN }}
+      {%- endraw %}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '{{ cookiecutter.python_version }}'
+          architecture: 'x64'
+      - name: Install poetry
+        run: |
+          pip install --upgrade pip
+          pip install poetry==1.6.1
+      - name: Install dependencies
+        run: poetry install
+      - name: Publish
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          poetry run inv publish

@@ -17,7 +17,6 @@ def test(ctx, debug=False, maxfail=0):
     """
     print_header("RUNNING TESTS")
     flags = [
-        "--verbose",
         f"--cov={package.__name__}",
         "--cov-branch",
         f'--cov-report="html:{_COVERAGE_PATH}"',
