@@ -1,7 +1,7 @@
 {
-    "project_slug": "test",
-    "project_name": "test",
-    "package_name": "test",
+    "project_slug": "test-package",
+    "project_name": "test-package",
+    "package_name": "test_package",
     "github_user": "jacksmith15",
     "copyright_name": "Jack Smith",
     "description": "Testing the template.",

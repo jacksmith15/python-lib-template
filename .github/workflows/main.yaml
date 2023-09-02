@@ -26,6 +26,6 @@ jobs:
         env:
           PYTHONPATH: .
         run: |
-          cd test
+          cd test-package
           poetry install
           poetry run inv verify
