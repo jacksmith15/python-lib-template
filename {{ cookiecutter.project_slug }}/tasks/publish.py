@@ -1,4 +1,5 @@
 import re
+import subprocess
 from pathlib import Path
 from typing import Callable, List, Tuple
 
@@ -22,15 +23,14 @@ def publish(ctx) -> None:
     _validate_branch(ctx)
     changelog = load_changelog()
     if has_untagged_changes(changelog):
-        # In this case we just push a new commit and tag with the versions
-        # updated. The next CI run will handle the actual publishing step.
         previous_tag, new_tag = cut_release(changelog)
         cprint(
             f"ℹ️ Found untagged changes. Pushing new release commit ({previous_tag} -> {new_tag}).",
             "blue",
         )
         tag_release(ctx, new_tag)
-    elif not changelog.latest_tag or already_published(changelog.latest_tag):
+        changelog = load_changelog()
+    if not changelog.latest_tag or already_published(changelog.latest_tag):
         cprint("✅ Already up-to-date.", "green")
         return
     else:
@@ -81,6 +81,21 @@ def tag_release(ctx, tag: str) -> None:
     ctx.run(f"git push origin {RELEASE_BRANCH}")
     ctx.run(f"git tag -a {tag} -m {tag}")
     ctx.run(f"git push origin {tag}")
+    subprocess.run(
+        [
+            "gh",
+            "release",
+            "create",
+            tag,
+            "--latest",
+            "--verify-tag",
+            "--title",
+            tag,
+            "--notes",
+            f"[Release Notes](https://github.com/jacksmith15/statham-schema/blob/{tag}/CHANGELOG.md)",
+        ],
+        check=True,
+    )
 
 
 def update_file(path: str, processor: Callable[[str], str]):
