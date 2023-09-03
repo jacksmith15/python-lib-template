@@ -6,7 +6,7 @@ from typing import Callable, List, Tuple
 import requests
 from changelog import dump_to_file as write_changelog
 from changelog import load_from_file as load_changelog
-from changelog.model import Changelog, ReleaseTag
+from changelog.model import Bump, Changelog, ReleaseTag
 from invoke import task
 from invoke.exceptions import Exit
 from termcolor import cprint
@@ -19,23 +19,24 @@ PACKAGE_FILE = str(Path(package.__file__).relative_to(Path(__file__).parent.pare
 
 
 @task
-def publish(ctx) -> None:
+def publish(ctx, tag: str = "auto", bump: str = "auto") -> None:
     _validate_branch(ctx)
     changelog = load_changelog()
-    if has_untagged_changes(changelog):
-        previous_tag, new_tag = cut_release(changelog)
-        cprint(
-            f"ℹ️ Found untagged changes. Pushing new release commit ({previous_tag} -> {new_tag}).",
-            "blue",
-        )
-        tag_release(ctx, new_tag)
-        changelog = load_changelog()
+    if not has_untagged_changes(changelog):
+        cprint("❌ No unreleased changes in changelog.", "red")
+        raise Exit(code=1)
+    previous_tag, new_tag = cut_release(changelog, tag=tag, bump=bump)
+    cprint(
+        f"ℹ️ Pushing new release commit ({previous_tag} -> {new_tag}).",
+        "blue",
+    )
+    tag_release(ctx, new_tag)
+    changelog = load_changelog()
     if not changelog.latest_tag or already_published(changelog.latest_tag):
         cprint("✅ Already up-to-date.", "green")
         return
-    else:
-        cprint(f"🚀 Publishing version {changelog.latest_tag}")
-        publish_release(ctx, changelog.latest_tag)
+    cprint(f"🚀 Publishing version {changelog.latest_tag}")
+    publish_release(ctx, changelog.latest_tag)
 
 
 def has_untagged_changes(changelog: Changelog) -> bool:
@@ -43,9 +44,12 @@ def has_untagged_changes(changelog: Changelog) -> bool:
     return bool(unreleased.entries)
 
 
-def cut_release(changelog: Changelog) -> Tuple[str, str]:
+def cut_release(changelog: Changelog, tag: str = "auto", bump: str = "auto") -> Tuple[str, str]:
     previous_tag: str = changelog.latest_tag or "unknown"
-    new_tag, release_content = changelog.cut_release()
+    new_tag, release_content = changelog.cut_release(
+        force=None if bump == "auto" else Bump[bump],  # type: ignore
+        tag=None if tag == "auto" else tag,  # type: ignore
+    )
 
     write_changelog(changelog)
 
@@ -92,7 +96,7 @@ def tag_release(ctx, tag: str) -> None:
             "--title",
             tag,
             "--notes",
-            f"[Release Notes](https://github.com/jacksmith15/statham-schema/blob/{tag}/CHANGELOG.md)",
+            f"[Release Notes](https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}/blob/{tag}/CHANGELOG.md)",
         ],
         check=True,
     )
@@ -121,6 +125,7 @@ def already_published(tag: ReleaseTag) -> bool:
 
 
 def publish_release(ctx, tag: ReleaseTag) -> None:
+    ctx.run("poetry build")
     ctx.run("poetry publish")
 
 {%- elif cookiecutter.package_type == "docker" -%}
