@@ -1,5 +1,7 @@
+import argparse
 import re
 import subprocess
+import sys
 from pathlib import Path
 from typing import Callable, List, Tuple
 
@@ -7,36 +9,32 @@ import requests
 from changelog import dump_to_file as write_changelog
 from changelog import load_from_file as load_changelog
 from changelog.model import Bump, Changelog, ReleaseTag
-from invoke import task
-from invoke.exceptions import Exit
 from termcolor import cprint
 
-from tasks.helpers import package
+import {{ cookiecutter.package_name }} as package
 
 RELEASE_BRANCH = "main"
 
 PACKAGE_FILE = str(Path(package.__file__).relative_to(Path(__file__).parent.parent.absolute()))
 
 
-@task
-def publish(ctx, tag: str = "auto", bump: str = "auto") -> None:
-    _validate_branch(ctx)
+def publish(tag: str = "auto", bump: str = "auto") -> None:
+    _validate_branch()
     changelog = load_changelog()
     if not has_untagged_changes(changelog):
-        cprint("❌ No unreleased changes in changelog.", "red")
-        raise Exit(code=1)
+        exit(code=1, message="No unreleased changes in changelog.")
     previous_tag, new_tag = cut_release(changelog, tag=tag, bump=bump)
     cprint(
         f"ℹ️ Pushing new release commit ({previous_tag} -> {new_tag}).",
         "blue",
     )
-    tag_release(ctx, new_tag)
+    tag_release(new_tag)
     changelog = load_changelog()
     if not changelog.latest_tag or already_published(changelog.latest_tag):
         cprint("✅ Already up-to-date.", "green")
         return
     cprint(f"🚀 Publishing version {changelog.latest_tag}")
-    publish_release(ctx, changelog.latest_tag)
+    publish_release(changelog.latest_tag)
 
 
 def has_untagged_changes(changelog: Changelog) -> bool:
@@ -75,16 +73,16 @@ def cut_release(changelog: Changelog, tag: str = "auto", bump: str = "auto") -> 
     return previous_tag, str(new_tag)
 
 
-def tag_release(ctx, tag: str) -> None:
+def tag_release(tag: str) -> None:
     files: List[str] = [
         "CHANGELOG.md",
         "pyproject.toml",
         PACKAGE_FILE,
     ]
-    ctx.run(f"git commit -i {' '.join(files)} -m {tag}")
-    ctx.run(f"git push origin {RELEASE_BRANCH}")
-    ctx.run(f"git tag -a {tag} -m {tag}")
-    ctx.run(f"git push origin {tag}")
+    run(f"git commit -i {' '.join(files)} -m {tag}")
+    run(f"git push origin {RELEASE_BRANCH}")
+    run(f"git tag -a {tag} -m {tag}")
+    run(f"git push origin {tag}")
     subprocess.run(
         [
             "gh",
@@ -124,21 +122,59 @@ def already_published(tag: ReleaseTag) -> bool:
     return False
 
 
-def publish_release(ctx, tag: ReleaseTag) -> None:
-    ctx.run("poetry build")
-    ctx.run("poetry publish")
+def publish_release(tag: ReleaseTag) -> None:
+    run("rye build")
+    run("rye publish")
 
 {%- elif cookiecutter.package_type == "docker" -%}
 def already_published(tag: ReleaseTag) -> bool:
     return False
 
-def publish_release(ctx, tag: ReleaseTag) -> None:
+def publish_release(tag: ReleaseTag) -> None:
     cprint("⚠️ No docker image publishing set-up")
 
 {%- endif %}
 
 
-def _validate_branch(ctx) -> None:
-    branch = ctx.run("git branch --show-current", hide=True).stdout.strip()
+def _validate_branch() -> None:
+    result = subprocess.run(
+        [
+            "git",
+            "branch",
+            "--show-current",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    branch = result.stdout.strip()
     if branch != RELEASE_BRANCH:
-        raise Exit(code=1, message=f"You are not on the release branch: {branch!r}")
+        exit(code=1, message=f"You are not on the release branch: {branch!r}")
+
+
+def run(command: str) -> None:
+    try:
+        subprocess.run(
+            command,
+            shell=True,
+            check=True,
+            capture_output=False,
+        )
+    except subprocess.CalledProcessError as error:
+        sys.exit(error.returncode)
+
+
+def exit(code: int, message: str) -> None:
+    if code != 0:
+        cprint(f"❌ {message}", "red")
+    else:
+        cprint(f"✅ {message}", "green")
+    sys.exit(code)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Cut a release and publish the package")
+    parser.add_argument("-t", "--tag", default="auto")
+    parser.add_argument("-b", "--bump", default="auto")
+    args = parser.parse_args()
+    publish(tag=args.tag, bump=args.bump)

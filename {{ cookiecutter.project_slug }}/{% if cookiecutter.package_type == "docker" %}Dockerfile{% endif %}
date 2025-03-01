@@ -9,22 +9,20 @@ ENV PIP_NO_CACHE_DIR="false"
 ENV PIP_DISABLE_PIP_VERSION_CHECK="on"
 ENV PIP_DEFAULT_TIMEOUT="100"
 
-ENV POETRY_VERSION=1.0.0
+ENV PYTHONPATH="src"
+ENV UV_VERSION="0.6.3"
 
-# System deps:
-RUN pip install --upgrade pip
-RUN pip install "poetry==$POETRY_VERSION"
+# Install uv
+RUN pip install uv==${UV_VERSION}
 
-# Copy only requirements to cache them in docker layer
 WORKDIR /app
-COPY poetry.lock pyproject.toml ./
+# Copy only requirements to cache them in docker layer
+COPY requirements.lock ./
+# Install requirements
+RUN uv pip install --no-cache --system -r requirements.lock
 
-# Project initialization:
-RUN poetry config virtualenvs.create false \
-  && poetry install --no-dev --no-interaction --no-ansi --no-root
+# Copy source files
+COPY src .
 
-# Copy folders, and files for a project:
-COPY {{ cookiecutter.package_name }} ./{{ cookiecutter.package_name }}
-
-# Execute command
+# Set entrypoint
 ENTRYPOINT python -m {{ cookiecutter.package_name }}

@@ -6,7 +6,6 @@ cover/
 *__pycache__/
 id_rsa
 .coverage
-src/
 venv/
 *test_results.xml
 .vscode/.ropeproject/config.py

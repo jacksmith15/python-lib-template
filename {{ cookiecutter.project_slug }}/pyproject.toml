@@ -1,70 +1,72 @@
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry]
+[project]
 name = "{{ cookiecutter.project_slug }}"
 version = "0.1.0"
 description = ""
-authors = ["{{ cookiecutter.copyright_name }}"]
-packages = [
-    {include = "{{ cookiecutter.package_name }}"},
+authors = [
+    { name = "{{ cookiecutter.copyright_name }}" }
 ]
+dependencies = []
+readme = "README.md"
+requires-python = ">= {{ cookiecutter.python_version }}"
+
+[project.urls]
 homepage = "https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}"
 repository = "https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.project_slug }}"
-readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^{{ cookiecutter.python_version }}"
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry.group.dev.dependencies]
-autoflake = "^2.2.1"
-black = "^23.7.0"
-changelog-cmd = "^0.2.0"
-invoke = "^2.2.0"
-ipdb = "^0.13.13"
-ipython = "^8.12"
-isort = "^5.12.0"
-mypy = "^1.5.1"
-pyflakes = "^3.1.0"
-pytest = "^7.4.0"
-pytest-cov = "^4.1.0"
-requests = "^2.31.0"
-termcolor = "^2.3.0"
-toml = "^0.10"
-types-requests = "^2.31.0.2"
-types-toml = "^0.10"
+[tool.rye]
+managed = true
+{%- if cookiecutter.package_type == "docker" %}
+virtual = true
+{%- endif %}
+dev-dependencies = [
+    "changelog-cmd~=0.2.0",
+    "ipdb~=0.13.13",
+    "ipython~=8.33.0",
+    "isort~=6.0.1",
+    "mypy~=1.15.0",
+    "pytest-cov~=6.0.0",
+    "pytest~=8.3.4",
+    "requests~=2.32.3",
+    "ruff~=0.9.9",
+    "termcolor~=2.5.0",
+    "toml~=0.10.2",
+    "types-requests~=2.32.0.20250301",
+    "types-toml~=0.10.8.20240310",
+]
 
-[tool.autoflake]
-recursive = true
-remove-all-unused-imports = true
-remove-unused-variables = true
-remove-duplicate-keys = true
-ignore-init-module-imports = true
+[tool.rye.scripts]
+verify = { chain = ["lint", "types", "test"] }
+types = { env = { PYTHONPATH = "src" }, cmd = "mypy src tests" }
+lint = { chain = [ "lint:isort", "lint:ruff" ] }
+"lint:isort" = { env = { PYTHONPATH = "src" }, cmd = "isort --check --diff src tests" }
+"lint:ruff" = { env = { PYTHONPATH = "src" }, cmd = "ruff check src tests" }
+fmt = { chain = [ "fmt:isort", "fmt:ruff" ] }
+"fmt:isort" = { env = { PYTHONPATH = "src" }, cmd = "isort src tests" }
+"fmt:ruff" = { env = { PYTHONPATH = "src" }, cmd = "ruff format src tests" }
+test = { env = { PYTHONPATH = "src" }, cmd = "pytest --cov-report \"html:reports/cover\" --cov-branch --cov=src tests" }
+coverage-open = { cmd = "xdg-open reports/cover/index.html" }
+changelog-check = { cmd = "changelog validate" }
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ cookiecutter.package_name }}"]
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py312"
 
 [tool.isort]
 atomic = true
 multi_line_output = 3
 profile = "black"
 line_length = 120
-
-[tool.black]
-line-length = 120
-target-version = ['py{{ cookiecutter.python_version.split(".") | join("") }}']
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
 
 [tool.mypy]
 check_untyped_defs = true
@@ -76,18 +78,16 @@ warn_redundant_casts = true
 warn_unused_configs = true
 warn_unused_ignores = true
 warn_unreachable = true
-
+plugins = []
 [[tool.mypy.overrides]]
 module = [
-    "setuptools.*",
-    "invoke.*",
 ]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = "tests"
-python_functions = "should_*"
-addopts = "-v"
+python_functions = ["test_*", "should_*"]
+addopts = "-vv"
 # Structure: https://docs.pytest.org/en/stable/warnings.html
 # Values:    https://docs.python.org/3/library/warnings.html#describing-warning-filters
 #            action:message:category:module:line
