@@ -4,7 +4,6 @@
     "package_name": "test_package",
     "github_user": "jacksmith15",
     "copyright_name": "Jack Smith",
-    "description": "Testing the template.",
     "package_type": "library",
-    "python_version": "3.8"
+    "python_version": "3.10"
 }

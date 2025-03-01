@@ -1,0 +1,7 @@
+services:
+  {{ cookiecutter.project_slug }}:
+    image: {{ cookiecutter.project_slug }}:0.1.0
+    build:
+      context: .
+    env_file:
+      - .env

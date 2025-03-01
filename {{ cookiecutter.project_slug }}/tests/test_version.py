@@ -9,7 +9,7 @@ class TestVersion:
     def should_match_pyproject() -> None:
         with open("pyproject.toml", "r") as file:
             pyproject = toml.loads(file.read())
-        assert pyproject["tool"]["poetry"]["version"] == package.__version__
+        assert pyproject["project"]["version"] == package.__version__
 
     @staticmethod
     def should_match_changelog() -> None:

@@ -1,6 +1,4 @@
-# {{ cookiecutter.project_name }}
-
-{{ cookiecutter.description }}
+# {{ cookiecutter.project_slug }}
 
 ## Installation
 
@@ -17,16 +15,21 @@ git clone https://github.com/{{ cookiecutter.github_user }}/{{ cookiecutter.proj
 Install dependencies:
 
 ```shell
-pyenv shell {{ cookiecutter.python_version }}.x
-pre-commit install  # Configure commit hooks
-poetry install  # Install Python dependencies
+rye sync
+```
+
+Install pre-commit hooks
+
+```shell
+pre-commit install
 ```
 
 Run tests:
 
 ```shell
-poetry run inv verify
+rye run verify
 ```
 
 # License
+
 This project is distributed under the MIT license.

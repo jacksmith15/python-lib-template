@@ -1,6 +1,6 @@
 # See https://pre-commit.com/ for usage and config
 default_language_version:
-  python: python3.8
+  python: python{{ cookiecutter.python_version }}
 repos:
 - repo: local
   hooks:
@@ -8,5 +8,5 @@ repos:
     name: formatting
     stages: [commit]
     language: system
-    entry: poetry run inv lint.fix
+    entry: rye run fmt
     pass_filenames: false

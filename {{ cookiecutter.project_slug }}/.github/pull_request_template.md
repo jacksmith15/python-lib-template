@@ -1,20 +1,20 @@
-Any related Github Issues?: _add link here_ 
+### What
 
-_What has changed? This should match `CHANGELOG.md`._
+<!--
+What does this PR do? This should match `CHANGELOG.md`. 
+-->
 
-# Check list
+### Why?
 
-## Before asking for a review
+<!--
+What is the motivation behind this PR?
+-->
 
-- [ ] Target branch is `master`
-- [ ] [`[Unreleased]`](../blob/master/CHANGELOG.md#unreleased) section in [CHANGELOG.md](../blob/master/CHANGELOG.md) is updated.
-- [ ] I reviewed the "Files changed" tab and self-annotated anything unexpected.
+### Related GitHub Issues
 
-## Before review (reviewer)
+<!--
+Include links to any related GitHub Issues, if relevant.
 
-- [ ] All of the above are checked and true. **Review ALL items.** If not, return the PR to the author.
-- [ ] Continuous Integration is passing. If not, return the PR to the author.
-
-## After merge (reviewer)
-
-- [ ] Any issues that may now be closed are closed.
+Refer to the following docs for linking keywords
+https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/using-keywords-in-issues-and-pull-requests
+-->
